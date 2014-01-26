@@ -94,7 +94,9 @@ class postfix::server (
   $clamav              = false,
   # Parameters
   $daemon_directory    = $::postfix::params::daemon_directory,
-  $service_restart     = $::postfix::params::service_restart
+  $service_restart     = $::postfix::params::service_restart,
+  $spampd_config       = $::postfix::params::spampd_config,
+  $spampd_template     = $::postfix::params::spampd_template
 ) inherits postfix::params {
 
   # Default has el5 files, for el6 a few defaults have changed
@@ -139,8 +141,8 @@ class postfix::server (
       hasstatus => true,
     }
     # Override the options passed to spampd
-    file { '/etc/sysconfig/spampd':
-      content => template('postfix/sysconfig-spampd.erb'),
+    file { $spampd_config:
+      content => template($spampd_template),
       notify  => Service['spampd'],
     }
     # Change the spamassassin options
